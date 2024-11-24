@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ControleLivros } from './controle/ControleLivros';
+import { ControleLivro } from './controle/ControleLivros';
 import { ControleEditora } from './controle/ControleEditora';
 
-const controleLivro = new ControleLivros();
+const controleLivro = new ControleLivro();
 const controleEditora = new ControleEditora();
 
 const LinhaLivro = (props) => {
@@ -39,42 +39,58 @@ const LivroLista = () => {
   const [livros, setLivros] = useState([]);
   const [carregado, setCarregado] = useState(false);
 
+ 
   useEffect(() => {
-    if (!carregado) {
-      setLivros(controleLivro.obterLivros());
-      setCarregado(true);
-    }
+      if (!carregado) {
+          controleLivro.obterLivros()
+              .then((dados) => {
+                  setLivros(dados); 
+                  setCarregado(true);
+              })
+              .catch((erro) => {
+                  console.error("Erro ao carregar livros:", erro);
+              });
+      }
   }, [carregado]);
 
-  const excluir = (codigo) => {
-    controleLivro.excluir(codigo);
-    setCarregado(false);
+  
+  const excluir = (id) => {
+      controleLivro.excluir(id)
+          .then((sucesso) => {
+              if (sucesso) {
+                  setLivros((livros) => livros.filter((livro) => livro._id !== id));
+              }
+          })
+          .catch((erro) => {
+              console.error("Erro ao excluir livro:", erro);
+          });
   };
 
+  
   return (
-    <main>
-      <h1 className="text-center mb-4">Catálogo de Livros</h1>
-      <table className="table table-striped table-hover"> {/* Estilos de tabela do Bootstrap */}
-        <thead className="thead-dark"> {/* Estilo de cabeçalho escuro */}
-          <tr>
-            <th>Título</th>
-            <th>Resumo</th>
-            <th>Editora</th>
-            <th>Autores</th>
-          </tr>
-        </thead>
-        <tbody>
-          {livros.map((livro) => (
-            <LinhaLivro 
-              key={livro.codigo} 
-              livro={livro} 
-              excluir={excluir} 
-            />
-          ))}
-        </tbody>
-      </table>
-    </main>
+      <main className="container my-4">
+          <h1 className="mb-4">Catálogo de Livros</h1>
+          <table className="table table-striped table-bordered table-hover">
+              <thead className="table-dark">
+                  <tr>
+                      <th className="col-2">Título</th>
+                      <th className="col-6">Resumo</th>
+                      <th className="col-2">Editora</th>
+                      <th className="col-2">Autores</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {}
+                  {livros.map((livro) => (
+                      <LinhaLivro
+                          key={livro._id} 
+                          livro={livro}
+                          excluir={excluir}
+                      />
+                  ))}
+              </tbody>
+          </table>
+      </main>
   );
 };
-
 export default LivroLista;

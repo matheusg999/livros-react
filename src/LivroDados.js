@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ControleLivros } from './controle/ControleLivros'; 
+import { ControleLivro }  from './controle/ControleLivros'; 
 import { ControleEditora } from './controle/ControleEditora';
 
 const LivroDados = () => {
-  const controleLivro = new ControleLivros();
+  const controleLivro = new ControleLivro();
   const controleEditora = new ControleEditora();
   const [titulo, setTitulo] = useState('');
   const [resumo, setResumo] = useState('');
@@ -30,14 +30,15 @@ const LivroDados = () => {
   const incluir = (event) => {
     event.preventDefault();
     const livro = {
-      codigo: 0, 
-      codEditora,
-      titulo,
-      resumo,
-      autores: autores.split('\n'),
-    };
-    controleLivro.incluir(livro);
-    navigate('/'); 
+      codigo: "", // Identificador inicial vazio
+      titulo: titulo,
+      resumo: resumo,
+      autores: autores.split('\n'), // Autores separados por linhas
+      codEditora: codEditora
+  };
+    controleLivro.incluir(livro).then(() => {
+      navigate('/');
+    }); 
   };
 
   return (

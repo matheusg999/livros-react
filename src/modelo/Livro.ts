@@ -1,14 +1,14 @@
 // src/modelo/Livro.ts
 
 export class Livro {
-  codigo: number;
+  _id?: string;
   codEditora: number;
   titulo: string;
   resumo: string;
   autores: string[];
 
-  constructor(codigo: number, codEditora: number, titulo: string, resumo: string, autores: string[]) {
-    this.codigo = codigo;
+  constructor(codEditora: number, titulo: string, resumo: string, autores: string[], _id?: string) {
+    this._id = _id;
     this.codEditora = codEditora;
     this.titulo = titulo;
     this.resumo = resumo;
